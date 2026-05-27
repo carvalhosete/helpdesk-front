@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -12,6 +13,7 @@ import { AuthService } from '../../services/auth';
 export class Login {
 
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   credenciais = {
     email: '',
@@ -21,7 +23,9 @@ export class Login {
   fazerLogin() {
     this.authService.despacharLogin(this.credenciais).subscribe({
       next: (res: any) => {
-        console.log('Login efetuado com sucesso! Resposta do IAM:', res);
+        this.authService.salvarToken(res.token);
+
+        this.router.navigate(['/chamados']);
       },
       error: (error: any) => {
         console.log('Falha na autenticação:', error);
